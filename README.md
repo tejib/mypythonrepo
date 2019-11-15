@@ -1,2 +1,2 @@
 # mypythonrepo
-Repo for Python done with Acloud Guru
+Repo for Python -- Automating in AWS
