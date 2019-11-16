@@ -1,4 +1,10 @@
 # mypythonrepo
 Repo for Python -- Automating in AWS
 
-01-webotron - Script added  to automatically set up session
+##01-webotron -
+Script added  to automatically set up session
+
+## Feature
+
+List S3 buckets
+List all objects in an S3 bucket
