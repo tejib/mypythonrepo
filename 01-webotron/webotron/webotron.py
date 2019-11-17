@@ -1,6 +1,8 @@
 import boto3
 import click
 from botocore.exceptions import ClientError
+from pathlib import Path
+import mimetypes
 
 session = boto3.Session(profile_name='admin')
 s3 = session.resource('s3')
@@ -88,6 +90,35 @@ def apply_policy(s3_bucket_name):
         })
 
     print("S3 bucket " + s3_bucket_name + " set up for static website hosting")
+
+def s3_upload(s3_bucket,path,key):
+    content_type = mimetypes.guess_type(key)[0] or 'text/plain'
+    s3_bucket.upload_file (
+    path,
+    key,
+    ExtraArgs = {
+     'ContentType': content_type
+    })
+
+@cli.command('sync')
+@click.argument('pathname',type = click.Path(exists=True))
+@click.argument('bucket')
+def sync(pathname,bucket):
+    "Sync contents of a path to S3 bucket"
+
+    s3_bucket = s3.Bucket(bucket)
+
+    root = Path(pathname).expanduser().resolve()
+
+    def handle_directory(target):
+        for p in target.iterdir():
+            if p.is_dir():
+                handle_directory(p)
+            if p.is_file():
+                #print("Path: {} \n Key: {}".format(p,str(p.relative_to(root).as_posix())))
+                s3_upload(s3_bucket,str(p),str(p.relative_to(root).as_posix()))  #as_posix() converts the path with forward / 
+
+    handle_directory(root)
 
 if __name__ == '__main__':
     cli()

@@ -9,3 +9,4 @@ Script added  to automatically set up session
 -- List S3 buckets
 -- List all objects in an S3 bucket
 -- Set up S3 bucket to host a static website
+-- Code added to sync S3 bucket
