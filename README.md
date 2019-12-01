@@ -10,3 +10,4 @@ Script added  to automatically set up session
 -- List all objects in an S3 bucket
 -- Set up S3 bucket to host a static website
 -- Code added to sync S3 bucket
+-- Pass AWS profile in command --profile <profile_name>

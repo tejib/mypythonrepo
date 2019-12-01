@@ -6,6 +6,8 @@ import mimetypes
 
 from botocore.exceptions import ClientError
 
+import util
+
 
 class BucketManager:
     """Manage an S3 bucket."""
@@ -37,11 +39,26 @@ class BucketManager:
                 resource = self.s3
                 # print(region_name)
                 # print(resource)
-                s3_bucket = self.create_bucket(bucket_name, region_name, resource)
+                s3_bucket = self.create_bucket(bucket_name, region_name,
+                    resource)
             else:
                 raise error
 
         return s3_bucket
+
+    def get_bucket_location(self, bucket_name):
+        """Get the location of S3 bucket."""
+        bucket_location = self.s3.meta.client.get_bucket_location(
+                Bucket=bucket_name)
+
+        return bucket_location['LocationConstraint'] or 'us-east-1'
+
+    def get_bucket_url(self, bucket_name):
+        """Get the Website URL for the bucket."""
+        return "http://{}.{}".format(
+            bucket_name,
+            util.get_endpoint(self.get_bucket_location(bucket_name)).host
+        )
 
     @staticmethod
     def create_bucket(bucket_name, region_name, resource):
@@ -53,7 +70,7 @@ class BucketManager:
         else:
             resource.create_bucket(Bucket=bucket_name,
                                    CreateBucketConfiguration={
-                        'LocationConstraint': region_name})
+                                   'LocationConstraint': region_name})
             print("bucket_created in region " + region_name)
 
     def apply_policy(self, bucket):
