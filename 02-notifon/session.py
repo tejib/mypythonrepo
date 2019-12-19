@@ -20,6 +20,7 @@ list(ec2.images.filter(Owners=['amazon']))
 len(list(ec2.images.filter(Owners=['amazon'])))
 img = ec2.Image('ami-00068cd7555f543d5')
 img.name
+ami_name = img.name
 filters = [{'Name':'name','Values':[ami_name]}]
 list(ec2.images.filter(Owners=['amazon'],Filters=filters))
 img.id
